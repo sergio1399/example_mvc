@@ -28,10 +28,12 @@ public class Forecast {
         return forecastDate;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "city_id")
     private City city;
 
+    @Version
+    private Integer version;
 
     public City getCity() {
         return city;

@@ -36,6 +36,6 @@ public class SimpleMessageListener implements MessageListener {
             e.printStackTrace();
         }
         Forecast forecast = ForecastConverter.viewToForecast(view);
-        forecastDAO.saveCityAndForecast(forecast);
+        forecastDAO.saveCityAndForecast(forecast.getCity(), forecast);
     }
 }

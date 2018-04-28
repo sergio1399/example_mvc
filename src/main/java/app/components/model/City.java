@@ -1,10 +1,7 @@
 package app.components.model;
 
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.Set;
 
 @Entity(name = "City")
@@ -19,8 +16,11 @@ public class City {
 
     private String country;
 
-    @OneToMany(mappedBy = "city", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true)
+    @OneToMany(mappedBy = "city", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Forecast> forecasts;
+
+    @Version
+    private Integer version;
 
     public void addForecast(Forecast forecast)
     {
