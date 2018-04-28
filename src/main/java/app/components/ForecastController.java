@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import app.components.utils.ForecastConverter;
+import app.components.view.ForecastCityView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
@@ -54,12 +55,13 @@ public class ForecastController {
 
         JSONObject json = new JSONObject((LinkedHashMap<String, String>) object);
 
-        Forecast forecast = ForecastConverter.JsonToForecast(json);
+        //Forecast forecast = ForecastConverter.JsonToForecast(json);
+        ForecastCityView forecastCityView = ForecastConverter.jsonToForecastCityView(json);
 
-        jmsTemplate.convertAndSend(forecast);
+        jmsTemplate.convertAndSend(forecastCityView);
 
         model.addAttribute("city", city);
-        model.addAttribute("forecast",forecast.toString());
+        model.addAttribute("forecast",forecastCityView.toString());
         return "forecast";
     }
 

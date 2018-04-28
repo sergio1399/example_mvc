@@ -20,15 +20,25 @@ public class Forecast {
 
     private Double visibility;
 
-    @Column(name = "city_id")
-    private Integer cityId;
-
     @Temporal(TemporalType.DATE)
     @Column(name = "forecast_date")
     private Date forecastDate;
 
     public Date getForecastDate() {
         return forecastDate;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "city_id")
+    private City city;
+
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 
     public void setForecastDate(Date forecastDate) {
@@ -59,14 +69,6 @@ public class Forecast {
         this.text = text;
     }
 
-    public Integer getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(int cityId) {
-        this.cityId = cityId;
-    }
-
     public Double getPressure() {
         return pressure;
     }
@@ -88,17 +90,19 @@ public class Forecast {
     public Forecast() {
     }
 
-    public Forecast(String temperature, String wind, String text, Integer cityId) {
-        this.temperature = temperature;
-        this.wind = wind;
-        this.text = text;
-        this.cityId = cityId;
-    }
-
     public Forecast(String temperature, String wind, String text) {
         this.temperature = temperature;
         this.wind = wind;
         this.text = text;
+    }
+
+    public Forecast(String temperature, String wind, String text, Double pressure, Double visibility, Date forecastDate) {
+        this.temperature = temperature;
+        this.wind = wind;
+        this.text = text;
+        this.pressure = pressure;
+        this.visibility = visibility;
+        this.forecastDate = forecastDate;
     }
 
     @Override
@@ -109,7 +113,6 @@ public class Forecast {
                 ", text='" + text + '\'' +
                 ", pressure=" + pressure +
                 ", visibility=" + visibility +
-                ", cityId=" + cityId +
                 '}';
     }
 }

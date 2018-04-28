@@ -1,5 +1,6 @@
 package app.components.dao;
 
+import app.components.model.City;
 import app.components.model.Forecast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,8 +17,7 @@ public class ForecastDAO {
     private EntityManager entityManager;
 
     @Transactional
-    public boolean save(Forecast forecast)
-    {
+    public boolean saveCityAndForecast(Forecast forecast){
         entityManager.persist(forecast);
         return true;
     }

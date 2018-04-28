@@ -1,7 +1,10 @@
 package app.components.service;
 
 import app.components.dao.ForecastDAO;
+import app.components.model.City;
 import app.components.model.Forecast;
+import app.components.utils.ForecastConverter;
+import app.components.view.ForecastCityView;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.json.JSONString;
@@ -24,15 +27,15 @@ public class SimpleMessageListener implements MessageListener {
     public void onMessage(Message message) {
         TextMessage textMessage = (TextMessage) message;
         ObjectMapper objectMapper = new ObjectMapper();
-        Forecast forecast = null;
+        ForecastCityView view = null;
         try {
-            forecast = objectMapper.readValue(textMessage.getText(), Forecast.class);
+            view = objectMapper.readValue(textMessage.getText(), ForecastCityView.class);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JMSException e) {
             e.printStackTrace();
         }
-
-        forecastDAO.save(forecast);
+        Forecast forecast = ForecastConverter.viewToForecast(view);
+        forecastDAO.saveCityAndForecast(forecast);
     }
 }

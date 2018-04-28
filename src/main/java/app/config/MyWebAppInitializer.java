@@ -11,7 +11,6 @@ public class MyWebAppInitializer extends
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class[]{RootConfig.class, PersistenceJPAConfig.class};
-       // return new Class[]{RootConfig.class};
     }
 
     @Override
