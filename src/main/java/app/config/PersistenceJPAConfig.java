@@ -39,7 +39,7 @@ public class PersistenceJPAConfig {
 
         return em;
     }*/
-   /* @Bean
+    @Bean
     public EntityManagerFactory entityManagerFactory() throws SQLException {
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -49,6 +49,7 @@ public class PersistenceJPAConfig {
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("app.components");
         factory.setDataSource(dataSource());
+        //factory.setJpaProperties(additionalProperties());
         factory.afterPropertiesSet();
 
         return factory.getObject();
@@ -58,10 +59,12 @@ public class PersistenceJPAConfig {
     @Bean
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("com.mysql.jdbc.Driver");
-        dataSource.setUrl("jdbc:mysql://localhost:3306/forecast");
+        //dataSource.setDriverClassName("com.mysql.jdbc.Driver");
+        //dataSource.setUrl("jdbc:mysql://localhost:3306/forecast");
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl("jdbc:postgresql://localhost:5432/weather");
         dataSource.setUsername( "sa" );
-        dataSource.setPassword( "admin" );
+        dataSource.setPassword( "sa" );
         return dataSource;
     }
 
@@ -82,8 +85,10 @@ public class PersistenceJPAConfig {
     Properties additionalProperties() {
         Properties properties = new Properties();
         properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        /*properties.setProperty(
+                "hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");*/
         properties.setProperty(
-                "hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
+                "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
         return properties;
     }
@@ -91,5 +96,5 @@ public class PersistenceJPAConfig {
     @Bean
     public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
         return entityManagerFactory.createEntityManager();
-    }*/
+    }
 }

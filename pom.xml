@@ -10,7 +10,6 @@
     <packaging>war</packaging>
     <properties>
         <failOnMissingWebXml>false</failOnMissingWebXml>
-        <mysql.connector.version>8.0.11</mysql.connector.version>
     </properties>
 
     <dependencies>
@@ -109,6 +108,12 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>5.0.5.RELEASE</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.2.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
         <dependency>

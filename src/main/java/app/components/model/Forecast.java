@@ -24,6 +24,7 @@ public class Forecast {
     private Integer cityId;
 
     @Temporal(TemporalType.DATE)
+    @Column(name = "forecast_date")
     private Date forecastDate;
 
     public Date getForecastDate() {
