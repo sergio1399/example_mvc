@@ -25,6 +25,8 @@ import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.SystemException;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -34,7 +36,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 public class PersistenceJPAConfig {
 
-    @Bean
+    /*@Bean
     public EntityManagerFactory entityManagerFactory() throws SQLException {
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -44,13 +46,32 @@ public class PersistenceJPAConfig {
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("app.components");
         factory.setDataSource(dataSource());
-        //factory.setJpaProperties(additionalProperties());
+        factory.setJpaProperties(additionalProperties());
         factory.afterPropertiesSet();
-        //factory.setPersistenceUnitPostProcessors
+
+        return factory.getObject();
+    }*/
+
+
+    @Bean
+    public EntityManagerFactory entityManagerFactory() throws SQLException {
+
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setGenerateDdl(false);
+
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setJpaVendorAdapter(vendorAdapter);
+        factory.setPackagesToScan("app.components");
+        factory.setDataSource(xaDataSource());
+        //factory.setJtaDataSource(xaDataSource());
+        factory.setJpaPropertyMap(jpaMapProperties());
+       // factory.setJpaProperties(additionalProperties());
+        factory.afterPropertiesSet();
+
         return factory.getObject();
     }
 
-  /*  @Bean
+    @Bean
     public AtomikosDataSourceBean xaDataSource(){
         AtomikosDataSourceBean ds = new AtomikosDataSourceBean();
         ds.setUniqueResourceName("xads");
@@ -82,16 +103,16 @@ public class PersistenceJPAConfig {
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() throws SystemException {
+    public JtaTransactionManager transactionManager() throws SystemException {
         JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
         jtaTransactionManager.setTransactionManager(userTransactionManager());
         jtaTransactionManager.setUserTransaction(userTransactionImp());
+        jtaTransactionManager.setAllowCustomIsolationLevels(true);
         return jtaTransactionManager;
     }
 
-*/
 
-
+/*
 
     @Bean
     public DataSource dataSource(){
@@ -111,7 +132,7 @@ public class PersistenceJPAConfig {
 
         return transactionManager;
     }
-
+*/
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
         return new PersistenceExceptionTranslationPostProcessor();
@@ -120,14 +141,27 @@ public class PersistenceJPAConfig {
 
 
 
-    /*Properties additionalProperties() {
+  /*  Properties additionalProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        //properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        properties.setProperty("hibernate.hbm2ddl.auto", "update");
         properties.setProperty(
                 "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
 
         return properties;
-    }*/
+    }
+*/
+
+    Map<String, Object> jpaMapProperties(){
+        Map<String, Object> properties = new HashMap<>();
+        properties.put("javax.persistence.transactionType", "JTA");
+        properties.put("hibernate.current_session_context_class", "jta");
+        properties.put("hibernate.transaction.manager_lookup_class", "com.atomikos.icatch.jta.hibernate4.TransactionManagerLookup");
+        properties.put("hibernate.connection.autocommit", "false");
+        return properties;
+    }
+
+
 
     @Bean
     public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {

@@ -115,12 +115,6 @@
             <artifactId>postgresql</artifactId>
             <version>42.2.2</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.atomikos/transactions-jta -->
-        <dependency>
-            <groupId>com.atomikos</groupId>
-            <artifactId>transactions-jta</artifactId>
-            <version>4.0.6</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.activemq/activemq-spring -->
         <dependency>
             <groupId>org.apache.activemq</groupId>
@@ -145,6 +139,19 @@
             <artifactId>transactions-jdbc</artifactId>
             <version>4.0.6</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.atomikos/transactions-api -->
+        <dependency>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions-api</artifactId>
+            <version>4.0.6</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.atomikos/transactions-hibernate4 -->
+        <dependency>
+            <groupId>com.atomikos</groupId>
+            <artifactId>transactions-hibernate4</artifactId>
+            <version>4.0.0M4</version>
+        </dependency>
+
 
 
 

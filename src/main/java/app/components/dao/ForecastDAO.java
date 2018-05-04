@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -24,14 +25,14 @@ public class ForecastDAO {
 
     @Transactional
     public boolean saveCityAndForecast(City city, Forecast forecast){
-        City oldCity = entityManager.find(City.class, city.getId());
-        if(oldCity == null) {
-            entityManager.persist(city);
-        }
-        city = entityManager.find(City.class, city.getId());
-        forecast.setCity(city);
-        entityManager.persist(forecast);
-        return true;
+            City oldCity = entityManager.find(City.class, city.getId());
+            if(oldCity == null) {
+                entityManager.persist(city);
+            }
+            city = entityManager.find(City.class, city.getId());
+            forecast.setCity(city);
+            entityManager.persist(forecast);
+            return true;
     }
 
     public City getCity(String name){
