@@ -2,6 +2,7 @@ package app.config;
 
 import app.components.service.SimpleMessageListener;
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.spring.ActiveMQXAConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -19,11 +20,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
-import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * @author imssbora
@@ -42,9 +38,16 @@ public class RootConfig {
         return converter;
     }
 
-    @Bean
+    /*@Bean
     public ActiveMQConnectionFactory connectionFactory(){
         ActiveMQConnectionFactory connectionFactory = new ActiveMQConnectionFactory("tcp://localhost:61616");
+        return connectionFactory;
+    }*/
+
+    @Bean
+    public ActiveMQXAConnectionFactory connectionFactory(){
+        ActiveMQXAConnectionFactory connectionFactory = new ActiveMQXAConnectionFactory();
+        connectionFactory.setBrokerURL("tcp://localhost:61616");
         return connectionFactory;
     }
 

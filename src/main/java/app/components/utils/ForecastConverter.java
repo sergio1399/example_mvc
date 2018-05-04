@@ -58,4 +58,9 @@ public class ForecastConverter {
         return new City(view.cityId, view.cityName, view.cityRegion, view.cityCountry);
     }
 
+    public static ForecastCityView toView(City city, Forecast forecast){
+        ForecastCityView view = new ForecastCityView(forecast, city);
+        return view;
+    }
+
 }

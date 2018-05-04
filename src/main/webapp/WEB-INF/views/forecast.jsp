@@ -4,10 +4,13 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-    <title>Forecast | BORAJI.COM</title>
+    <title>Forecast</title>
 </head>
 <body>
 <h2>Forecast for ${city}</h2>
-<h4>${forecast} </h4>
+<h4>${forecast} </h4> <br/>
+<form method="get" action="/">
+    <input type="submit" name="menu" value="/">
+</form>
 </body>
 </html>

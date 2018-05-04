@@ -6,7 +6,7 @@
 <body>
 <form method="get" action="/forecast">
     <input type="text" name="city">
-    <input type="submit" name="send" value="send">
+    <input type="submit" name="send" value="Прогноз">
 </form>
 </body>
 </html>

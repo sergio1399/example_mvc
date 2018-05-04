@@ -1,17 +1,11 @@
-package app.components;
+package app.components.controller;
 
-import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 import app.components.utils.ForecastConverter;
 import app.components.view.ForecastCityView;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 
-import app.components.model.Forecast;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -35,8 +29,21 @@ public class ForecastController {
     @RequestMapping(path={"/"},method=RequestMethod.GET)
     public String init(Model model) {
 
-        return "index";
+        return "menu";
     }
+
+    @RequestMapping(path={"/add"},method=RequestMethod.GET)
+    public String add(Model model) {
+
+        return "add";
+    }
+
+    @RequestMapping(path={"/find"},method=RequestMethod.GET)
+    public String find(Model model) {
+
+        return "find";
+    }
+
 
     @RequestMapping(path={"/forecast"},method=RequestMethod.GET)
     public String forecast(@RequestParam(value="city", required=true) String city, Model model) {

@@ -1,5 +1,6 @@
 package app.components.view;
 
+import app.components.model.City;
 import app.components.model.Forecast;
 
 import java.util.Date;
@@ -46,6 +47,19 @@ public class ForecastCityView {
         this.cityName = cityName;
         this.cityRegion = cityRegion;
         this.cityCountry = cityCountry;
+        this.temperature = forecast.getTemperature();
+        this.wind = forecast.getWind();
+        this.text = forecast.getText();
+        this.pressure = forecast.getPressure();
+        this.visibility = forecast.getVisibility();
+        this.forecastDate = forecast.getForecastDate();
+    }
+
+    public ForecastCityView(Forecast forecast, City city){
+        this.cityId = city.getId();
+        this.cityName = city.getName();
+        this.cityRegion = city.getRegion();
+        this.cityCountry = city.getCountry();
         this.temperature = forecast.getTemperature();
         this.wind = forecast.getWind();
         this.text = forecast.getText();
