@@ -22,7 +22,7 @@ import java.io.IOException;
 public class SimpleMessageListener implements MessageListener {
 
     @Autowired
-    private ForecastDAO forecastDAO;
+    private ListenService service;
 
     public void onMessage(Message message) {
         TextMessage textMessage = (TextMessage) message;
@@ -35,8 +35,6 @@ public class SimpleMessageListener implements MessageListener {
         } catch (JMSException e) {
             e.printStackTrace();
         }
-        Forecast forecast = ForecastConverter.viewToForecast(view);
-        forecastDAO.saveCityAndForecast(forecast.getCity(), forecast);
-        //throw new RuntimeException("Handmade exception!");
+        service.save(view);
     }
 }
