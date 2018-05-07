@@ -4,7 +4,7 @@
     <title>Поиск по городу</title>
 </head>
 <body>
-<form method="get" action="/forecast">
+<form method="get" action="forecast">
     <input type="text" name="city">
     <input type="submit" name="send" value="Прогноз">
 </form>

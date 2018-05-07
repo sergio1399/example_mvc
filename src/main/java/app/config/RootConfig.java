@@ -1,6 +1,7 @@
 package app.config;
 
 import app.components.service.SimpleMessageListener;
+import com.atomikos.jms.AtomikosConnectionFactoryBean;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.spring.ActiveMQXAConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.jms.ConnectionFactory;
 
 
 /**
@@ -45,9 +48,14 @@ public class RootConfig {
     }*/
 
     @Bean
-    public ActiveMQXAConnectionFactory connectionFactory(){
+    public ConnectionFactory connectionFactory(){
         ActiveMQXAConnectionFactory connectionFactory = new ActiveMQXAConnectionFactory();
         connectionFactory.setBrokerURL("tcp://localhost:61616");
+        /*AtomikosConnectionFactoryBean atomikosConnectionFactoryBean = new AtomikosConnectionFactoryBean();
+        atomikosConnectionFactoryBean.setUniqueResourceName("xamq");
+        atomikosConnectionFactoryBean.setLocalTransactionMode(false);
+        atomikosConnectionFactoryBean.setXaConnectionFactory(connectionFactory);
+        return atomikosConnectionFactoryBean;*/
         return connectionFactory;
     }
 
@@ -68,5 +76,4 @@ public class RootConfig {
         jmsTemplate.setMessageConverter(jacksonJmsMessageConverter());
         return jmsTemplate;
     }
-
 }

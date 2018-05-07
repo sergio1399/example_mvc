@@ -1,23 +1,39 @@
 package app.config;
 
+import app.components.service.SimpleMessageListener;
 import com.atomikos.icatch.jta.UserTransactionImp;
 import com.atomikos.icatch.jta.UserTransactionManager;
 import com.atomikos.jdbc.AtomikosDataSourceBean;
+//import com.atomikos.icatch.jta.
+import com.atomikos.jms.AtomikosConnectionFactoryBean;
+import org.apache.activemq.spring.ActiveMQXAConnectionFactory;
 import org.postgresql.xa.PGXADataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.listener.DefaultMessageListenerContainer;
+import org.springframework.jms.support.converter.MappingJackson2MessageConverter;
+import org.springframework.jms.support.converter.MessageConverter;
+import org.springframework.jms.support.converter.MessageType;
+import org.springframework.orm.jpa.JpaDialect;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.jta.JtaTransactionManager;
+import org.hibernate.engine.transaction.jta.platform.spi.JtaPlatform;
+import org.hibernate.engine.transaction.jta.platform.internal.AbstractJtaPlatform;
 
+import javax.jms.ConnectionFactory;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
@@ -30,42 +46,32 @@ import java.util.Map;
 import java.util.Properties;
 
 
-
 @Configuration
 @ComponentScan(basePackages = { "app.components" })
 @EnableTransactionManagement
 public class PersistenceJPAConfig {
 
-    /*@Bean
-    public EntityManagerFactory entityManagerFactory() throws SQLException {
-
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setGenerateDdl(true);
-
-        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-        factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("app.components");
-        factory.setDataSource(dataSource());
-        factory.setJpaProperties(additionalProperties());
-        factory.afterPropertiesSet();
-
-        return factory.getObject();
-    }*/
-
-
     @Bean
-    public EntityManagerFactory entityManagerFactory() throws SQLException {
+    @DependsOn("springJtaPlatformAdapter")
+    public EntityManagerFactory entityManagerFactory() {
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         vendorAdapter.setGenerateDdl(false);
+        vendorAdapter.setDatabasePlatform("org.hibernate.dialect.PostgreSQL95Dialect");
 
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
         factory.setJpaVendorAdapter(vendorAdapter);
         factory.setPackagesToScan("app.components");
+        factory.setJpaDialect(new HibernateJpaDialect());
         factory.setDataSource(xaDataSource());
-        //factory.setJtaDataSource(xaDataSource());
         factory.setJpaPropertyMap(jpaMapProperties());
-       // factory.setJpaProperties(additionalProperties());
+
+        Properties p = new Properties();
+        p.setProperty("hibernate.hbm2ddl.auto", "update");
+        p.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL95Dialect");
+        factory.setJpaProperties(p);
+
+
         factory.afterPropertiesSet();
 
         return factory.getObject();
@@ -87,18 +93,18 @@ public class PersistenceJPAConfig {
         return ds;
     }
 
-
+    @Bean
     public UserTransactionManager userTransactionManager() throws SystemException {
-       UserTransactionManager userTransactionManager = new UserTransactionManager();
-       userTransactionManager.setForceShutdown(false);
-       userTransactionManager.init();
-       return userTransactionManager;
+        UserTransactionManager userTransactionManager = new UserTransactionManager();
+        userTransactionManager.setForceShutdown(false);
+        userTransactionManager.init();
+        return userTransactionManager;
     }
 
-
+    @Bean
     public UserTransactionImp userTransactionImp() throws SystemException {
         UserTransactionImp userTransactionImp = new UserTransactionImp();
-        userTransactionImp.setTransactionTimeout(300);
+        userTransactionImp.setTransactionTimeout(1000);
         return userTransactionImp;
     }
 
@@ -107,64 +113,36 @@ public class PersistenceJPAConfig {
         JtaTransactionManager jtaTransactionManager = new JtaTransactionManager();
         jtaTransactionManager.setTransactionManager(userTransactionManager());
         jtaTransactionManager.setUserTransaction(userTransactionImp());
-        jtaTransactionManager.setAllowCustomIsolationLevels(true);
+        //jtaTransactionManager.setAllowCustomIsolationLevels(true);
         return jtaTransactionManager;
     }
 
-
-/*
-
-    @Bean
-    public DataSource dataSource(){
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setUrl("jdbc:postgresql://localhost:5432/weather");
-        dataSource.setUsername( "sa" );
-        dataSource.setPassword( "sa" );
-        return dataSource;
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager(
-            EntityManagerFactory emf){
-        JpaTransactionManager transactionManager = new JpaTransactionManager();
-        transactionManager.setEntityManagerFactory(emf);
-
-        return transactionManager;
-    }
-*/
     @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation(){
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
-
-
-
-  /*  Properties additionalProperties() {
-        Properties properties = new Properties();
-        //properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        properties.setProperty("hibernate.hbm2ddl.auto", "update");
-        properties.setProperty(
-                "hibernate.dialect", "org.hibernate.dialect.PostgreSQLDialect");
-
-        return properties;
-    }
-*/
-
     Map<String, Object> jpaMapProperties(){
         Map<String, Object> properties = new HashMap<>();
         properties.put("javax.persistence.transactionType", "JTA");
         properties.put("hibernate.current_session_context_class", "jta");
-        properties.put("hibernate.transaction.manager_lookup_class", "com.atomikos.icatch.jta.hibernate4.TransactionManagerLookup");
-        properties.put("hibernate.connection.autocommit", "false");
+        properties.put("hibernate.transaction.jta.platform", "app.config.SpringJtaPlatformAdapter");
+        properties.put("hibernate.connection.autocommit", "true");
         return properties;
     }
 
+    @Bean
+    SpringJtaPlatformAdapter springJtaPlatformAdapter() throws SystemException {
+        SpringJtaPlatformAdapter springJtaPlatformAdapter = new SpringJtaPlatformAdapter();
+        springJtaPlatformAdapter.setJtaTransactionManager(transactionManager());
+        return springJtaPlatformAdapter;
+    }
 
 
     @Bean
     public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
         return entityManagerFactory.createEntityManager();
     }
+
+
 }

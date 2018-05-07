@@ -37,5 +37,6 @@ public class SimpleMessageListener implements MessageListener {
         }
         Forecast forecast = ForecastConverter.viewToForecast(view);
         forecastDAO.saveCityAndForecast(forecast.getCity(), forecast);
+        //throw new RuntimeException("Handmade exception!");
     }
 }

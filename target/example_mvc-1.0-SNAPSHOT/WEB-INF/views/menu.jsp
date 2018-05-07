@@ -11,10 +11,10 @@
     <title>Меню</title>
 </head>
 <body>
-<form method="get" action="/add">
+<form method="get" action="add">
     <input type="submit" name="add" value="Добавить прогноз">
 </form>
-<form method="get" action="/find">
+<form method="get" action="find">
     <input type="submit" name="find" value="Найти прогноз в БД">
 </form>
 </body>

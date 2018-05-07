@@ -11,7 +11,7 @@
     <title>Поиск в БД</title>
 </head>
 <body>
-<form method="get" action="/find/view_from_base">
+<form method="get" action="find/view_from_base">
     <input type="text" name="city">
     <input type="submit" name="send" value="Найти">
 </form>
